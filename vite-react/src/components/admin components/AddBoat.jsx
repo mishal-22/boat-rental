@@ -19,31 +19,29 @@ function AddBoat() {
   const navigate = useNavigate();
   const [flagCheck, setFlagCheck] = useState(false);
 
-
   //------------------- For Validation and API calling -----------------------------------
   const [validated, setValidated] = useState(false);
   const [toast, setToast] = useState(false);
-  const [file,setFile]=useState(null)
+  const [file, setFile] = useState(null);
 
   //------------------ Formik ---------------------------------------------
   const formik = useFormik({
     initialValues: {
       boatName: "",
-      ownerName: "",
+      // ownerName: "",
       description: "",
       capacity: "",
       price: "",
       photo: null,
-      isActive:true
+      isActive: true,
     },
 
     validationSchema: Yup.object({
       boatName: Yup.string()
-        .matches(/^[A-Za-z]+$/, "Boat name must be letters")
         .required("Boat Name is required"),
-      ownerName: Yup.string()
-        .matches(/^[A-Za-z]+$/, "Owner name must be letters")
-        .required("Owner Name is required"),
+      // ownerName: Yup.string()
+      //   .matches(/^[A-Za-z]+$/, "Owner name must be letters")
+      //   .required("Owner Name is required"),
       description: Yup.string().required("Description is required"),
       capacity: Yup.string()
         .matches(/^[0-9]+$/, "Must be number")
@@ -59,31 +57,29 @@ function AddBoat() {
         const formData = new FormData();
         formData.append("photo", file);
         formData.append("boatName", values.boatName);
-        formData.append("ownerName", values.ownerName);
+        // formData.append("ownerName", values.ownerName);
         formData.append("capacity", values.capacity);
         formData.append("price", values.price);
         formData.append("description", values.description);
-        formData.append("isActive",values.isActive)
-        formData.append("username",sessionStorage.getItem("username"))
-       
-        
-        const response = await axios.post('http://localhost:8080/boat', formData);
-        console.log(response.status)
-        
+        formData.append("isActive", values.isActive);
+        formData.append("username", sessionStorage.getItem("username"));
+
+        const response = await axios.post(
+          "http://localhost:8080/boat",
+          formData
+        );
+        console.log(response.status);
+
         setValidated(true);
 
         //------------------ Display Toast ---------------------------------------------------
-        if (response.status===200) {
+        if (response.status === 200) {
           setFlagCheck(true);
           setToast(true);
 
           // Redirect to manage tenant page after 3 seconds
           const timeoutId = setTimeout(() => {
-            
-            
             navigate("/admin/boats");
-
-            
           }, 1000);
           // Clear the timeout
           return () => clearTimeout(timeoutId);
@@ -114,7 +110,7 @@ function AddBoat() {
                   <Row>
                     <Form.Group
                       as={Col}
-                      md={6}
+                      md={9}
                       className="mb-3"
                       id="validationBoatName"
                     >
@@ -137,35 +133,6 @@ function AddBoat() {
                       {formik.touched.boatName && formik.errors.boatName && (
                         <div className="invalid-feedback">
                           {formik.errors.boatName}
-                        </div>
-                      )}
-                    </Form.Group>
-
-                    <Form.Group
-                      as={Col}
-                      md={6}
-                      className="mb-3"
-                      id="validationOwnerName"
-                    >
-                      <Form.Label className="">Owner Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="ownerName"
-                        placeholder="Owner name"
-                        aria-label="Last name"
-                        value={formik.values.ownerName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={
-                          formik.touched.ownerName && formik.errors.ownerName
-                            ? "is-invalid"
-                            : ""
-                        }
-                        required
-                      />
-                      {formik.touched.ownerName && formik.errors.ownerName && (
-                        <div className="invalid-feedback">
-                          {formik.errors.ownerName}
                         </div>
                       )}
                     </Form.Group>
@@ -271,7 +238,7 @@ function AddBoat() {
                         onChange={(event) => {
                           const fileName = event.target.files[0];
                           formik.setFieldValue("photo", fileName);
-                          setFile(fileName)
+                          setFile(fileName);
                         }}
                         onBlur={formik.handleBlur}
                         className={

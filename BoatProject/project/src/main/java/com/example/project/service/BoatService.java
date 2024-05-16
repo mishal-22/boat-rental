@@ -9,9 +9,8 @@ import com.example.project.entity.Boat;
 
 public interface BoatService {
 
-	
-
-	String addboat(String username,String boatName, String ownerName, int capacity,int price, String description,MultipartFile image,boolean isActive) throws IOException;
+	String addboat(String username, String boatName, int capacity, int price, String description, MultipartFile image,
+			boolean isActive) throws IOException;
 
 	List<Boat> getAllBoats(String username);
 
@@ -20,5 +19,7 @@ public interface BoatService {
 	String deleteBoat(Long id);
 
 	String setActive(Long id);
+
+	List<Boat> getAllBoatsForUsers();
 
 }

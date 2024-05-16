@@ -23,8 +23,9 @@ const Boat = ({ boat }) => {
           </div>
         </div>
         <div className="text-center mt-auto">
-        <Link to={`/user/booking/${boat.id}`} className="btn btn-primary">
-            <FaAnchor />&nbsp;Book Now!
+          <Link to={`/user/booking/${boat.id}`} className="btn btn-primary">
+            <FaAnchor />
+            &nbsp;Book Now!
           </Link>
         </div>
       </Card.Body>

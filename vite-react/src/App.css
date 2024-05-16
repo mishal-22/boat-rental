@@ -7,7 +7,7 @@
   background-image: url("/background-5.jpg");
   background-size: cover; /* Cover the entire container */
   background-position: center; /* Center the background image */
-  min-height: 82vh; /* Make the container take up the full viewport height */
+  min-height: 90vh; /* Make the container take up the full viewport height */
   display: flex;
   justify-content: center; /* Center content horizontally */
   align-items: center; /* Center content vertically */

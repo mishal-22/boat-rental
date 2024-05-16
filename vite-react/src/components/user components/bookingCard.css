@@ -1,0 +1,21 @@
+.booking-details {
+    border: 1px solid #ddd; /* Add a border */
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .booking-section {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .booking-title {
+    font-weight: bold; /* Make title bold */
+    color: #007bff; /* Set color */
+    font-family: Arial, sans-serif; /* Set font family */
+    min-width: 120px; /* Ensure consistent width for all titles */
+  }
+  
+  .booking-info {
+    margin-left: 10px;
+  }

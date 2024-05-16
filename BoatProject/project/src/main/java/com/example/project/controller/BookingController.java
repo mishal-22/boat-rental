@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.project.dto.BookedResponse;
+import com.example.project.dto.BookingRequest;
 import com.example.project.entity.Booking;
 import com.example.project.service.BookingService;
 
@@ -25,9 +27,8 @@ public class BookingController {
 	BookingService bookingService;
 
 	@PostMapping()
-	public String addBooking(@RequestParam Long boatId, @RequestParam String name, @RequestParam String email,
-			@RequestParam String phone,@RequestParam String date,@RequestParam String startTime,@RequestParam String endTime) {
-		return bookingService.addBooking(boatId,name,email,phone,date,startTime,endTime);
+	public String addBooking(@RequestBody BookingRequest bookingRequest) {
+		return bookingService.addBooking(bookingRequest);
 	}
 
 	@GetMapping()
@@ -40,4 +41,13 @@ public class BookingController {
 		return bookingService.deleteBooking(id);
 	}
 
+	@GetMapping("/view")
+	public List<BookedResponse> getAllBookedBoatsById(@RequestParam("username") String username) {
+		return bookingService.getAllBookedBoatsById(username);
+	}
+
+	@GetMapping("/admin-view")
+	public List<BookedResponse> getAllBookedBoatsForAdmin(@RequestParam("username") String username) {
+		return bookingService.getAllBookedBoatsForAdmin(username);
+	}
 }

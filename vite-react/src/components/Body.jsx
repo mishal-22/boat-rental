@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 function Body() {
   return (
@@ -8,7 +8,7 @@ function Body() {
         <h2>Rent Your Dream</h2>
       </div>
     </div>
-  )
+  );
 }
 
-export default Body
+export default Body;

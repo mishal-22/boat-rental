@@ -1,5 +1,5 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import React from "react";
+import { NavLink } from "react-router-dom";
 function Header() {
   return (
     <div>
@@ -11,7 +11,7 @@ function Header() {
         </div>
       </nav>
     </div>
-  )
+  );
 }
 
-export default Header
+export default Header;

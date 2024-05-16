@@ -5,8 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,19 +22,19 @@ public class BoatServiceImpl implements BoatService {
 	BoatRepository boatRepository;
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Override
-	public String addboat(String username,String boatName, String ownerName, int capacity,int price, String description,MultipartFile image,boolean isActive) throws IOException {
-		
-		
-		Users user= userRepository.findByEmail(username);
-		String folderPath="C:\\Users\\91702\\OneDrive\\Desktop\\boat\\vite-react\\public\\";
-		String fileName=image.getOriginalFilename();
-		Path filePath=Paths.get(folderPath+fileName);
-		Files.write(filePath,image.getBytes());
-		Boat boatRequest=new Boat();
+	public String addboat(String username, String boatName, int capacity, int price, String description,
+			MultipartFile image, boolean isActive) throws IOException {
+
+		Users user = userRepository.findByEmail(username);
+		String folderPath = "C:\\Users\\91702\\OneDrive\\Desktop\\boat\\vite-react\\public\\";
+		String fileName = image.getOriginalFilename();
+		Path filePath = Paths.get(folderPath + fileName);
+		Files.write(filePath, image.getBytes());
+		Boat boatRequest = new Boat();
 		boatRequest.setBoatName(boatName);
-		boatRequest.setOwnerName(ownerName);
+		boatRequest.setOwnerName(user.getUsername());
 		boatRequest.setCapacity(capacity);
 		boatRequest.setDescription(description);
 		boatRequest.setImage(fileName);
@@ -50,43 +48,49 @@ public class BoatServiceImpl implements BoatService {
 
 	@Override
 	public List<Boat> getAllBoats(String username) {
-		Users users= userRepository.findByEmail(username);
+		Users users = userRepository.findByEmail(username);
 		return boatRepository.findAllByUserId(users.getId());
 	}
 
 	@Override
 	public Boat getBoatById(Long id) {
-		
+
 		return boatRepository.findById(id).get();
 	}
 
 	@Override
 	public String deleteBoat(Long id) {
-		if(getBoatById(id)==null) {
+		if (getBoatById(id) == null) {
 			return "Boat does not exist with this id";
-		}
-		else {
+		} else {
 			boatRepository.deleteById(id);
-			return "Boat successfully deleted" ;
+			return "Boat successfully deleted";
 		}
 	}
 
 	@Override
 	public String setActive(Long id) {
-		Boat boat=boatRepository.findById(id).orElse(null);
-		if(boat==null) {
+		Boat boat = boatRepository.findById(id).orElse(null);
+		if (boat == null) {
 			return "Boat not found";
 		}
-		else {
-			if(boat.isActive()) {
+		if (boat.isBooked()) {
+			return "Boat is booked, so can't activate";
+		} else {
+			if (boat.isActive()) {
 				boat.setActive(false);
-			}
-			else {
+			} else {
 				boat.setActive(true);
 			}
 			boatRepository.save(boat);
 			return "Boat added successfully";
 		}
+	}
+
+	@Override
+	public List<Boat> getAllBoatsForUsers() {
+
+		return boatRepository.findAll();
 	}
 
 }

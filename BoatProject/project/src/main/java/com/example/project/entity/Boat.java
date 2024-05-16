@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,21 +22,20 @@ public class Boat {
 	private String ownerName;
 
 	private int capacity;
-	
+
 	private int price;
 
 	private String description;
 
 	private String image;
-	
+
 	private boolean isActive;
-	
+
 	private boolean isBooked;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "userId",referencedColumnName = "id")
+	@JoinColumn(name = "userId", referencedColumnName = "id")
 	private Users user;
-	
 
 	public Users getUser() {
 		return user;
@@ -118,7 +116,5 @@ public class Boat {
 	public void setBooked(boolean isBooked) {
 		this.isBooked = isBooked;
 	}
-	
-	
 
 }

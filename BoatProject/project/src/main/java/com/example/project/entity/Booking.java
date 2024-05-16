@@ -5,13 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-@Setter
-@Getter
 public class Booking {
 
 	@Id
@@ -20,14 +16,18 @@ public class Booking {
 	private String name;
 	private String email;
 	private String phone;
+
 	private String date;
+
 	private String startTime;
+
 	private String endTime;
-	@OneToOne
-	@JoinColumn(name = "userId",referencedColumnName = "id")
+	@ManyToOne
+	@JoinColumn(name = "userId", referencedColumnName = "id")
 	private Users user;
-	@OneToOne
-	@JoinColumn(name = "boat_id",referencedColumnName = "id")
+
+	@ManyToOne
+	@JoinColumn(name = "boat_id", referencedColumnName = "id")
 	private Boat boat;
 
 	public Long getId() {
@@ -86,6 +86,14 @@ public class Booking {
 		this.endTime = endTime;
 	}
 
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
 	public Boat getBoat() {
 		return boat;
 	}
@@ -93,9 +101,5 @@ public class Booking {
 	public void setBoat(Boat boat) {
 		this.boat = boat;
 	}
-
-	
-
-	
 
 }

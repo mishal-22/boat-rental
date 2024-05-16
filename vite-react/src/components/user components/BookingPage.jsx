@@ -24,10 +24,9 @@ const BookingPage = () => {
   const [boat, setBoat] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [formData, setFormData] = useState({});
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
       phone: "",
       date: "",
       startTime: "",
@@ -35,12 +34,6 @@ const BookingPage = () => {
     },
 
     validationSchema: Yup.object({
-      name: Yup.string()
-        .matches(/^[A-Za-z]+$/, "Name must be letters")
-        .required("Name is required"),
-      email: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
       phone: Yup.string()
         .matches(
           /^[0-9]{10}$/,
@@ -64,17 +57,15 @@ const BookingPage = () => {
 
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        const formData = new FormData();
+        setFormData({
+          username: sessionStorage.getItem("username"),
+          boatId: id,
+          phone: values.phone,
+          date: values.date,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        });
 
-        formData.append("name", values.name);
-        formData.append("email", values.email);
-        formData.append("phone", values.phone);
-        formData.append("date", values.date);
-        formData.append("startTime", values.startTime);
-        formData.append("endTime", values.endTime);
-
-        // const response = await axios.post('http://localhost:8080/boat', formData);
-        // console.log(formData)
         handleBooking();
 
         setValidated(true);
@@ -97,9 +88,9 @@ const BookingPage = () => {
         .matches(/^[A-Za-z]+$/, "Name must be letters")
         .required("Name is required"),
       cardNumber: Yup.string()
-        .matches(/^[0-9]{14}$/, "Card Number must be number and 14 digits long")
+        .matches(/^[0-9]+$/, "Card Number must be number")
         .required("Card Number is required"),
-      exDate: Yup.string().required("Date is required"),
+      exDate: Yup.string().matches(/^(0[1-9]|1[0-2])\/\d{2}$/,"Must be in MM/YY format").required("Date is required"),
       code: Yup.string()
         .matches(/^[0-9]{6}$/, "Verification Code must be 6 digits long")
         .required("Verification Code is required"),
@@ -132,9 +123,21 @@ const BookingPage = () => {
     }
   };
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     // Perform payment processing here
     // Assuming payment is successful for demonstration purposes
+    // console.log(typeof formData.date);
+    // formData.append("username",sessionStorage.getItem("username"));
+    const response = await axios.post(
+      "http://localhost:8080/booking",
+      formData
+    );
+    if (response.status == 200) {
+      const timeoutId = setTimeout(() => {}, 3000);
+      // Clear the timeout
+      navigate("/user/view-booking");
+      return () => clearTimeout(timeoutId);
+    }
     setPaymentSuccess(true);
     setShowPaymentModal(false);
   };
@@ -190,65 +193,7 @@ const BookingPage = () => {
                         <Row>
                           <Form.Group
                             as={Col}
-                            md={6}
-                            className="mb-3"
-                            id="validationBoatName"
-                          >
-                            <Form.Label className="">Name</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="name"
-                              placeholder="Name"
-                              aria-label="Name"
-                              value={formik.values.name}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              className={
-                                formik.touched.name && formik.errors.name
-                                  ? "is-invalid"
-                                  : ""
-                              }
-                              required
-                            />
-                            {formik.touched.name && formik.errors.name && (
-                              <div className="invalid-feedback">
-                                {formik.errors.name}
-                              </div>
-                            )}
-                          </Form.Group>
-
-                          <Form.Group
-                            as={Col}
-                            md={6}
-                            className="mb-3"
-                            id="validationOwnerName"
-                          >
-                            <Form.Label className="">Email</Form.Label>
-                            <Form.Control
-                              type="text"
-                              name="email"
-                              placeholder="Email"
-                              aria-label="email"
-                              value={formik.values.email}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              className={
-                                formik.touched.email && formik.errors.email
-                                  ? "is-invalid"
-                                  : ""
-                              }
-                              required
-                            />
-                            {formik.touched.email && formik.errors.email && (
-                              <div className="invalid-feedback">
-                                {formik.errors.email}
-                              </div>
-                            )}
-                          </Form.Group>
-
-                          <Form.Group
-                            as={Col}
-                            md={6}
+                            md={12}
                             className="mb-3"
                             id="validationCapacity"
                           >
@@ -276,7 +221,7 @@ const BookingPage = () => {
                           </Form.Group>
                           <Form.Group
                             as={Col}
-                            md={6}
+                            md={12}
                             className="mb-3"
                             id="validationCapacity"
                           >
@@ -488,12 +433,15 @@ const BookingPage = () => {
           <Button variant="secondary" onClick={handleClosePaymentModal}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={() => {
-      paymentFormik.handleSubmit();
-      if (paymentValidated) {
-        handlePayment();
-      }
-    }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              paymentFormik.handleSubmit();
+              if (paymentValidated) {
+                handlePayment();
+              }
+            }}
+          >
             Pay
           </Button>
         </Modal.Footer>
@@ -504,7 +452,10 @@ const BookingPage = () => {
         </Modal.Header>
         <Modal.Body>Your booking has been successfully completed!</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => navigate("/view-booking")}>
+          <Button
+            variant="primary"
+            onClick={() => navigate("/user/view-booking")}
+          >
             View Bookings
           </Button>
         </Modal.Footer>
